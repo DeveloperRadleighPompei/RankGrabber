@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title></title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css"
+    />
+    <style>
+      @import url("https://fonts.googleapis.com/css?family=Lato:300");
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Lato";
+        font-size: 16px;
+      }
+
+      /*** <--- CIRCLE STYLES ---> ***/
+      .wrap-circles {
+        display: flex;
+        min-height: 100vh;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+        padding: 2rem 1rem;
+        background: #000;
+      }
+
+      .circle {
+        position: relative;
+        width: 218px; /* Changed from 150px to 218px */
+        height: 218px; /* Changed from 150px to 218px */
+        margin: 0.5rem;
+        border-radius: 50%;
+        background: #ffcdb2;
+        overflow: hidden;
+      }
+
+      .circle.per-50 {
+        background-image: conic-gradient(
+          #ffff calc(3.6deg * var(--percentage)),
+          #000 0
+        );
+      }
+
+      .circle .inner {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 183px; /* Changed from 115px to 183px */
+        height: 183px; /* Changed from 115px to 183px */
+        background: #000;
+        border-radius: 50%;
+        font-size: 1.85em;
+        font-weight: 300;
+        color: rgba(255, 255, 255, 0.75);
+      }
+
+      .image {
+        height: 80%;
+      }
+      #line2 {
+        position: absolute;
+        color: white;
+        top: 35%;
+        left: 50%;
+        z-index: 1;
+        font-size: 30px;
+        font-weight: bold;
+        font-family: Arial, sans-serif; /* Change the font-family to whatever you prefer */
+      }
+
+    </style>
+  </head>
+  <body>
+    <!-- partial:index.partial.html -->
+    <div class="wrap-circles">
+      <p id="line1"></p>
+      <p id="line2"></p>
+      <div class="circle per-50">
+        <div class="inner"><img class="image" /></div>
+      </div>
+    </div>
+    <!-- partial -->
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // Fetch rank.txt
+        fetch("rank.txt")
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("Network response was not ok");
+            }
+            return response.text();
+          })
+          .then((data) => {
+            const lines = data.split("\n");
+            const percentage = parseFloat(lines[1]);
+            const imageUrl = lines[3];
+            console.log("Percentage:", percentage);
+            console.log("Image URL:", imageUrl);
+            const line1 = lines[0]; // Line 1 from rank.txt
+            const line2 = lines[2] + "%"; // Line 2 from rank.txt
+            document.getElementById("line1").textContent = line1;
+            document.getElementById("line2").textContent = line2;
+            // Set custom property for percentage
+            document.documentElement.style.setProperty(
+              "--percentage",
+              `${percentage}`
+            );
+
+            // Select the image element
+            var image = document.querySelector(".image");
+
+            // Load the image
+            image.src = imageUrl;
+          })
+          .catch((error) => {
+            console.error("Error fetching data:", error);
+          });
+      });
+    </script>
+  </body>
+</html>
